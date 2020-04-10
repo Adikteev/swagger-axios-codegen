@@ -8,16 +8,16 @@ import { getRequestBody } from './getRequestBody'
 import { ISwaggerOptions } from '../baseInterfaces'
 
 export interface IRequestClass {
-  [key: string]: IRequestMethods[];
+  [key: string]: IRequestMethods[]
 }
 
 export interface IRequestMethods {
-  name: string;
-  operationId: string;
-  requestSchema: any;
+  name: string
+  operationId: string
+  requestSchema: any
 }
 
-export function requestCodegen(paths: IPaths, isV3: boolean, options: ISwaggerOptions): IRequestClass {
+export function requestCodegen (paths: IPaths, isV3: boolean, options: ISwaggerOptions): IRequestClass {
   const requestClasses: IRequestClass = {}
 
   if (!!paths)
@@ -27,7 +27,7 @@ export function requestCodegen(paths: IPaths, isV3: boolean, options: ISwaggerOp
         methodName = options.methodNameMode === 'operationId' ? reqProps.operationId : methodName
         if (!methodName) {
           // console.warn('method Name is null：', path);
-          continue;
+          continue
         }
         const contentType =
           reqProps.consumes && reqProps.consumes.includes('multipart/form-data')
@@ -52,7 +52,9 @@ export function requestCodegen(paths: IPaths, isV3: boolean, options: ISwaggerOp
           // 获取到接口的参数
           parsedParameters = getRequestParameters(reqProps.parameters)
 
-          formData = parsedParameters.requestFormData ? 'data = new FormData();\n' + parsedParameters.requestFormData : ''
+          formData = parsedParameters.requestFormData
+            ? 'data = new FormData();\n' + parsedParameters.requestFormData
+            : ''
           pathReplace = parsedParameters.requestPathReplace
         }
 
@@ -91,7 +93,7 @@ export function requestCodegen(paths: IPaths, isV3: boolean, options: ISwaggerOp
         parsedParameters.imports = imports
 
         // TODO 待优化，目前简单处理同名方法
-        let uniqueMethodName = camelcase(methodName)
+        let uniqueMethodName = camelcase(reqProps.tags.join('-'))
 
         var uniqueMethodNameReg = new RegExp(`^${uniqueMethodName}[0-9]*$`)
 
